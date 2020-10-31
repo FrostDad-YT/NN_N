@@ -1,6 +1,5 @@
 import random
 import math
-import time
 
 n = 0  # количество эпох
 y = 0
@@ -10,7 +9,7 @@ ER = 0
 MM = [0, 0]  # положение мыши
 MM1 = [0, 0]
 vector = []
-N = 8
+N = 4
 
 '''Генерация матрицы NхN'''
 matrix = []
@@ -104,18 +103,26 @@ def action():  # вычисляется оптимальный ход, выво�
     # else:
 
 
-def render():
-    for i in range(N):
-        for _ in range(N):
-            if MM[0] == i and MM[1] == _:
-                print('*', end=' ')
-            else:
-                print('#', end=' ')
-        print()
+def render(x):
+    global matrix
+    if x != 0:
+        for i in range(N):
+            for _ in range(N):
+                if MM[0] == i and MM[1] == _:
+                    print('*', end=' ')
+                else:
+                    print('#', end=' ')
+            print()
+    if x != 1:
+        for i in matrix:
+            for _ in range(N):
+                print(i[_], end=' ')
+            print()
 
 
 '''основной цикл просчета пути'''
-for i in range(50009):  # MM => [строка, столбец]
+
+for i in range(500000):  # MM => [строка, столбец]
     # time.sleep(0.1)
     ER = exploration_rate(i)
     # print(MM)
@@ -136,4 +143,7 @@ for i in range(50009):  # MM => [строка, столбец]
     """опишем поощирения"""
     # пока не описал
     if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
-        print('really???')
+        # print('really???')
+        matrix[N-1][N-1] = float(matrix[N-1][N-1]) + 0.5
+        MM = [0, 0]
+render(2)
