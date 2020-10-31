@@ -1,15 +1,19 @@
 import random
 import math
+import time
+
 
 n = 0  # количество эпох
 y = 0
 q = 0
 h = 0
 ER = 0
+ct = 0
 MM = [0, 0]  # положение мыши
 MM1 = [0, 0]
 vector = []
-N = 4
+N = 8
+nn = 5000000
 
 '''Генерация матрицы NхN'''
 matrix = []
@@ -20,10 +24,10 @@ for i in range(N):
 print(matrix)
 
 
-def exploration_rate(n, min_rate=0.1):
+def exploration_rate(n, min_rate=0.3):
     """ Метод для вычисления коэффициента 'любопытства'.
         Чем дольше мы обучаемся, тем больше мы опираемся на политику и меньше на рандом."""
-    if random.uniform(0, 1) >= max(min_rate, min(1, 1.0 - math.log10((n + 1) / 25))):
+    if random.uniform(0, 1) >= max(min_rate, min(1, 1.0 - math.log10((n + 1) / (nn/5)))):
         return action()
     else:
         return Random()
@@ -53,7 +57,7 @@ def go(y):
 
 
 '''Функция принятия рандомного действия'''
-def Random() -> object:
+def Random():
     global MM, h, q
     q = random.randint(1, 4)
     # print('рандом =', q)
@@ -109,7 +113,7 @@ def render(x):
         for i in range(N):
             for _ in range(N):
                 if MM[0] == i and MM[1] == _:
-                    print('*', end=' ')
+                    print('.', end=' ')
                 else:
                     print('#', end=' ')
             print()
@@ -122,7 +126,7 @@ def render(x):
 
 '''основной цикл просчета пути'''
 
-for i in range(500000):  # MM => [строка, столбец]
+for i in range(nn):  # MM => [строка, столбец]
     # time.sleep(0.1)
     ER = exploration_rate(i)
     # print(MM)
@@ -138,12 +142,35 @@ for i in range(500000):  # MM => [строка, столбец]
     # print(MM)
 
     # render()
-
+    # print(MM)
+    ct += 0.001
+    float(matrix[MM[0]][MM[1]]) - float(ct)
+    matrix[MM[0]][MM[1]] = float(matrix[MM[0]][MM[1]]) + 0.05
 
     """опишем поощирения"""
     # пока не описал
     if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
         # print('really???')
-        matrix[N-1][N-1] = float(matrix[N-1][N-1]) + 0.5
+        matrix[N-1][N-1] = float(matrix[N-1][N-1]) + 50
         MM = [0, 0]
+        MM1 = [0, 0]
+        ct = 0
+
 render(2)
+
+
+for i in range(1000):
+    time.sleep(0.07)
+    ER = exploration_rate(i + nn)
+    # print(MM)
+    # print(ER)
+    if ER == 1:
+        MM[1] -= 1
+    elif ER == 2:
+        MM[0] -= 1
+    elif ER == 3:
+        MM[1] += 1
+    elif ER == 4:
+        MM[0] += 1
+    # render(1)
+    print()
