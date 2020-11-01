@@ -145,6 +145,7 @@ def render(x):
                 else:
                     print('#', end=' ')
             print()
+        print()
     if x == 3 or x == 2:
         for i in matrix:
             for _ in range(N):
@@ -154,39 +155,41 @@ def render(x):
 
 '''основной цикл просчета пути'''
 
-for i in range(nn):  # MM => [строка, столбец]
-    # time.sleep(0.1)
-    ER = exploration_rate(i)
-    # print(MM)
-    # print(ER)
-    if ER == 1:
-        MM[1] -= 1
-    elif ER == 2:
-        MM[0] -= 1
-    elif ER == 3:
-        MM[1] += 1
-    elif ER == 4:
-        MM[0] += 1
-    # print(MM)
+def F():
+    global ER, MM, MM1, nn, ct, N, matrix
+    for i in range(nn):  # MM => [строка, столбец]
+        # time.sleep(0.1)
+        ER = exploration_rate(i)
+        # print(MM)
+        # print(ER)
+        if ER == 1:
+            MM[1] -= 1
+        elif ER == 2:
+            MM[0] -= 1
+        elif ER == 3:
+            MM[1] += 1
+        elif ER == 4:
+            MM[0] += 1
+        # print(MM)
 
-    # render()
-    # print(MM)
-    # print(matrix)
-    ct += 500
-    # float(matrix[MM[0]][MM[1]]) - float(ct)
-    # matrix[MM[0]][MM[1]] = float(matrix[MM[0]][MM[1]]) + 0.05
+        # render()
+        # print(MM)
+        # print(matrix)
+        ct += 500
+        # float(matrix[MM[0]][MM[1]]) - float(ct)
+        # matrix[MM[0]][MM[1]] = float(matrix[MM[0]][MM[1]]) + 0.05
 
-    """опишем поощирения"""
-    if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
-        # print('really???')
-        matrix[N - 1][N - 1] = matrix[N - 1][N - 1] + 5000
-        MM = [0, 0]
-        MM1 = [0, 0]
-        ct = 0
-    # matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] + 5
-    matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] - ct
-
-render(2)
+        """опишем поощирения"""
+        if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
+            # print('really???')
+            matrix[N - 1][N - 1] = matrix[N - 1][N - 1] + 5000
+            MM = [0, 0]
+            MM1 = [0, 0]
+            ct = 0
+        # matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] + 5
+        matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] - ct
+# F()
+# render(0)
 
 
 def pk(k):
@@ -196,7 +199,7 @@ def pk(k):
     for i in range(1000):
         ct += 1
         # time.sleep(0.5)
-        ER = exploration_rate(i + (nn // 3))
+        ER = exploration_rate(i + (nn // 2))
         # print(action())
         # print(MM)
         # print(ER)
