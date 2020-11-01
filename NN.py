@@ -2,7 +2,7 @@ import random
 import math
 import time
 
-n = 0  # количество эпох
+n = 0
 y = 0
 q = 0
 h = 0
@@ -14,7 +14,7 @@ MM1 = [0, 0]
 vector = []
 vec = []
 N = 10
-nn = 500000
+nn = 500000  # количество эпох
 
 '''Генерация матрицы NхN'''
 matrix = []
