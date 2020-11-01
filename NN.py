@@ -9,6 +9,7 @@ h = 0
 ER = 0
 ct = 0
 t = 0
+tr = 0
 MM = [0, 0]  # (начальное) положение мыши
 MM1 = [0, 0]
 vector = []
@@ -136,7 +137,7 @@ def action():  # вычисляется оптимальный ход, выво�
 
 def render(x):
     global matrix, MM
-    if x != 0:
+    if x == 3 or x == 1:
         for i in range(N):
             for _ in range(N):
                 if MM[0] == i and MM[1] == _:
@@ -144,7 +145,7 @@ def render(x):
                 else:
                     print('#', end=' ')
             print()
-    if x != 1:
+    if x == 3 or x == 2:
         for i in matrix:
             for _ in range(N):
                 print(round(i[_] / matrix[N - 1][N - 1], 5), end=' ')
@@ -189,37 +190,39 @@ render(2)
 
 
 def pk(k):
-    global MM, MM1, ER
+    global MM, MM1, ER, ct
     ct = 0
     MM = [0, 0]
     for i in range(1000):
         ct += 1
         # time.sleep(0.5)
         ER = exploration_rate(i + (nn // 3))
-        print(action())
+        # print(action())
         # print(MM)
         # print(ER)
         if ER == 1:
-            print(ER, MM[0])
+            # print(ER, MM[0])
             MM[1] -= 1
         elif ER == 2:
-            print(ER, MM[0])
+            # print(ER, MM[0])
             MM[0] -= 1
         elif ER == 3:
-            print(ER, MM[0])
+            # print(ER, MM[0])
             MM[1] += 1
         elif ER == 4:
-            print(ER, MM[0])
+            # print(ER, MM[0])
             MM[0] += 1
 
         render(k)
-        print()
+        # print()
 
         if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
-            print(ct)
+            # print(ct)
             break
             # MM = [0, 0]
             # MM1 = [0, 0]
 
+tr = 1
 
-pk(1)
+
+# pk(1)
