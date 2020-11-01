@@ -2,32 +2,37 @@ import random
 import math
 import time
 
-
 n = 0  # количество эпох
 y = 0
 q = 0
 h = 0
 ER = 0
 ct = 0
+t = 0
 MM = [0, 0]  # положение мыши
 MM1 = [0, 0]
 vector = []
-N = 8
-nn = 5000000
+vec = []
+N = 10
+nn = 500000
 
 '''Генерация матрицы NхN'''
 matrix = []
 for i in range(N):
     matrix.append([])
     for _ in range(N):
-        matrix[i].append(random.random())
-print(matrix)
+        # matrix[i].append(random.random())
+        matrix[i].append(0)
 
 
-def exploration_rate(n, min_rate=0.3):
+# print(matrix)
+
+
+def exploration_rate(n, min_rate=0.1):
     """ Метод для вычисления коэффициента 'любопытства'.
         Чем дольше мы обучаемся, тем больше мы опираемся на политику и меньше на рандом."""
-    if random.uniform(0, 1) >= max(min_rate, min(1, 1.0 - math.log10((n + 1) / (nn/5)))):
+    if random.uniform(0, 1) >= max(min_rate, min(1, 1.0 - math.log10(
+            (n + 1) / (nn / 10)))):  # Чем меньше число, тем больший рандом
         return action()
     else:
         return Random()
@@ -57,6 +62,8 @@ def go(y):
 
 
 '''Функция принятия рандомного действия'''
+
+
 def Random():
     global MM, h, q
     q = random.randint(1, 4)
@@ -84,6 +91,7 @@ def action():  # вычисляется оптимальный ход, выво�
     if go(2) in [1, 2, 3, 4]:  # смотрим значение сверху
         MM1 = MM[:]
         MM1[0] -= 1
+        # print('2) MM1 в action:', MM1)
         vector.append(matrix[int(MM1[0])][int(MM1[1])])  # в вектор vector вторым значением запишем сверху от мыши
     else:
         vector.append(0)
@@ -98,17 +106,27 @@ def action():  # вычисляется оптимальный ход, выво�
     if go(4) in [1, 2, 3, 4]:  # смотрим значение снизу
         MM1 = MM[:]
         MM1[0] += 1
+        # print('4) MM1 в action:', MM1)
         vector.append(matrix[int(MM1[0])][int(MM1[1])])  # в вектор vector четвёртым значением запишем снизу от мыши
     else:
         vector.append(0)
     # if go(vector.index(max(vector))) != 0:
     # print('vector:', vector, max(vector), 1 + vector.index(max(vector)))
-    return 1 + vector.index(max(vector)) # так как список значений имеет вид 0-3, а действия в системе обозначены как 1-4
-    # else:
+    if max(vector) == 0:
+        vector[vector.index(max(vector))] = -100000000000
+        if max(vector) == 0:
+            if True:
+                # print(vector.index(max(vector)))
+                # vec = vector[:]
+                vector[vector.index(max(vector))] = -100000000000
+                # print(vector)
+    # print('vector:', vector, max(vector), 1 + vector.index(max(vector)))
+    return 1 + int(vector.index(max(vector)))  # так как список значений имеет вид 0-3,
+    # а действия в системе обозначены как 1-4
 
 
 def render(x):
-    global matrix
+    global matrix, MM
     if x != 0:
         for i in range(N):
             for _ in range(N):
@@ -120,7 +138,7 @@ def render(x):
     if x != 1:
         for i in matrix:
             for _ in range(N):
-                print(i[_], end=' ')
+                print(round(i[_] / matrix[N - 1][N - 1], 5), end=' ')
             print()
 
 
@@ -143,34 +161,57 @@ for i in range(nn):  # MM => [строка, столбец]
 
     # render()
     # print(MM)
-    ct += 0.001
-    float(matrix[MM[0]][MM[1]]) - float(ct)
-    matrix[MM[0]][MM[1]] = float(matrix[MM[0]][MM[1]]) + 0.05
+    # print(matrix)
+    ct += 500
+    # float(matrix[MM[0]][MM[1]]) - float(ct)
+    # matrix[MM[0]][MM[1]] = float(matrix[MM[0]][MM[1]]) + 0.05
 
     """опишем поощирения"""
     # пока не описал
     if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
         # print('really???')
-        matrix[N-1][N-1] = float(matrix[N-1][N-1]) + 50
+        matrix[N - 1][N - 1] = matrix[N - 1][N - 1] + 5000
         MM = [0, 0]
         MM1 = [0, 0]
         ct = 0
+    # matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] + 5
+    matrix[MM[0]][MM[1]] = matrix[MM[0]][MM[1]] - ct
 
 render(2)
 
 
-for i in range(1000):
-    time.sleep(0.07)
-    ER = exploration_rate(i + nn)
-    # print(MM)
-    # print(ER)
-    if ER == 1:
-        MM[1] -= 1
-    elif ER == 2:
-        MM[0] -= 1
-    elif ER == 3:
-        MM[1] += 1
-    elif ER == 4:
-        MM[0] += 1
-    # render(1)
-    print()
+def pk(k):
+    global MM, MM1, ER
+    ct = 0
+    MM = [0, 0]
+    for i in range(1000):
+        ct += 1
+        # time.sleep(0.5)
+        ER = exploration_rate(i + (nn // 3))
+        print(action())
+        # print(MM)
+        # print(ER)
+        if ER == 1:
+            print(ER, MM[0])
+            MM[1] -= 1
+        elif ER == 2:
+            print(ER, MM[0])
+            MM[0] -= 1
+        elif ER == 3:
+            print(ER, MM[0])
+            MM[1] += 1
+        elif ER == 4:
+            print(ER, MM[0])
+            MM[0] += 1
+
+        render(k)
+        print()
+
+        if MM[0] == N - 1 and MM[1] == N - 1:  # положение сыра в клетке NxN
+            print(ct)
+            break
+            # MM = [0, 0]
+            # MM1 = [0, 0]
+
+
+pk(1)
